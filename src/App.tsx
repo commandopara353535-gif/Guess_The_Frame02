@@ -16,27 +16,32 @@ function App() {
     WVish: 0,
     Aziz: 0,
   });
+  const [sectionReferees, setSectionReferees] = useState<Record<string, string>>({});
   const [usedReferees, setUsedReferees] = useState<string[]>([]);
-  const [currentReferee, setCurrentReferee] = useState<string>('');
   const [timeLeft, setTimeLeft] = useState(18);
   const [isTimerActive, setIsTimerActive] = useState(false);
+
+  const currentReferee = sectionReferees[currentSection] || '';
+
+  useEffect(() => {
+    if (!sectionReferees[currentSection]) {
+      const availablePlayers = PLAYERS.filter(player => !usedReferees.includes(player));
+      if (availablePlayers.length > 0) {
+        const randomReferee = availablePlayers[Math.floor(Math.random() * availablePlayers.length)];
+        setSectionReferees(prev => ({
+          ...prev,
+          [currentSection]: randomReferee
+        }));
+        setUsedReferees(prev => [...prev, randomReferee]);
+      }
+    }
+  }, [currentSection]);
 
   const updateScore = (player: string, points: number) => {
     setScores(prev => ({
       ...prev,
       [player]: prev[player] + points,
     }));
-  };
-
-  const handleRefereeSelected = (referee: string) => {
-    setCurrentReferee(referee);
-    setUsedReferees(prev => {
-      const newUsed = [...prev, referee];
-      if (newUsed.length >= PLAYERS.length) {
-        return [];
-      }
-      return newUsed;
-    });
   };
 
   const handleTimerStart = () => {
@@ -116,8 +121,6 @@ function App() {
             {currentSection === 'hollywood' && (
               <GuessHollywoodFrame
                 updateScore={updateScore}
-                onRefereeSelected={handleRefereeSelected}
-                usedReferees={usedReferees}
                 currentReferee={currentReferee}
                 onTimerUpdate={handleTimerUpdate}
                 onTimerStart={handleTimerStart}
@@ -127,8 +130,6 @@ function App() {
             {currentSection === 'indian' && (
               <GuessIndianFrame
                 updateScore={updateScore}
-                onRefereeSelected={handleRefereeSelected}
-                usedReferees={usedReferees}
                 currentReferee={currentReferee}
                 onTimerUpdate={handleTimerUpdate}
                 onTimerStart={handleTimerStart}
@@ -138,8 +139,6 @@ function App() {
             {currentSection === 'riddles' && (
               <RiddlesQuiz
                 updateScore={updateScore}
-                onRefereeSelected={handleRefereeSelected}
-                usedReferees={usedReferees}
                 currentReferee={currentReferee}
                 onTimerUpdate={handleTimerUpdate}
                 onTimerStart={handleTimerStart}
@@ -149,8 +148,6 @@ function App() {
             {currentSection === 'dialogues' && (
               <GuessDialogues
                 updateScore={updateScore}
-                onRefereeSelected={handleRefereeSelected}
-                usedReferees={usedReferees}
                 currentReferee={currentReferee}
                 onTimerUpdate={handleTimerUpdate}
                 onTimerStart={handleTimerStart}

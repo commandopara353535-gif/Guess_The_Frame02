@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Plus, Minus } from 'lucide-react';
-import RefereeSelector from './RefereeSelector';
 
 interface GuessHollywoodFrameProps {
   updateScore: (player: string, points: number) => void;
-  onRefereeSelected: (referee: string) => void;
-  usedReferees: string[];
   currentReferee: string;
   onTimerUpdate: (time: number) => void;
   onTimerStart: () => void;
@@ -30,8 +27,6 @@ const hollywoodFrames = [
 
 export default function GuessHollywoodFrame({
   updateScore,
-  onRefereeSelected,
-  usedReferees,
   currentReferee,
   onTimerUpdate,
   onTimerStart,
@@ -109,12 +104,6 @@ export default function GuessHollywoodFrame({
 
   return (
     <div className="space-y-6">
-      <RefereeSelector
-        onRefereeSelected={onRefereeSelected}
-        usedReferees={usedReferees}
-        key={timerKey}
-      />
-
       <div className="bg-white rounded-lg shadow-xl p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           Guess the Hollywood Frame
